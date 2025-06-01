@@ -27,6 +27,14 @@ def analyze():
         "filename": screenshot.filename if screenshot else None
     })
 
+@app.route("/transcribe", methods=["POST"])
+def transcribe():
+    audio = request.files.get("audio")
+    if audio:
+        transcript = openai.Audio.transcribe("whisper-1", audio)
+        return jsonify({"status": "success", "transcript": transcript["text"]})
+    return jsonify({"status": "fail", "message": "No audio file received."})
+
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5050)
 
